@@ -462,11 +462,9 @@ abstract contract ComLiquidate is Ownable {
         factory = IMdexFactory(router.factory());
     }
     
-    function combine(address inToken,uint256 _amount, address lpToken,address _from) internal returns(uint256 liquidity) {
+    function combine(address inToken,uint256 _amount, address lpToken) internal returns(uint256 liquidity) {
 
-        require(_amount>0,"not good");
-        IERC20(inToken).safeTransferFrom(_from,address(this),_amount);
-        
+        require(_amount>0,"not good");        
         address _pair = lpToken;
         require(_pair!=address(0),"no lp");
 
@@ -1340,7 +1338,7 @@ abstract contract Vault is IVault, ERC20, Operatable, ReentrancyGuard,ComLiquida
         uint _before = getBalance();
         doTransferIn(msg.sender, inToken, _amount);
         uint _rest = allotBonus(_amount,inToken);
-        combine(inToken, _rest, underlying(), msg.sender);
+        combine(inToken, _rest, underlying());
         uint _after = getBalance();
         _amount = _after.sub(_before);
         // getPricePerFullShare
